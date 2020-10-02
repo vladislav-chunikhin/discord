@@ -10,9 +10,10 @@
     </parent>
     <groupId>ru.cosysoft.discord</groupId>
     <artifactId>discordbot</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1-develop</version>
     <name>discordbot</name>
     <description>discord notification bot</description>
+    <packaging>jar</packaging>
 
     <properties>
         <java.version>1.8</java.version>
@@ -56,6 +57,26 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
+                        <configuration>
+                            <additionalProperties>
+                                <encoding.source>${project.build.sourceEncoding}</encoding.source>
+                                <encoding.reporting>${project.reporting.outputEncoding}</encoding.reporting>
+                                <java.source>${maven.compiler.source}</java.source>
+                                <java.target>${maven.compiler.target}</java.target>
+                            </additionalProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
