@@ -13,6 +13,7 @@ public class NotificationController {
 
     private final NotificationComponent notificationComponent;
 
+    //https://discordbotcosy.herokuapp.com/notify/daily-status
     @GetMapping("/daily-status")
     public void sendDailyStatusNotification() {
         this.notificationComponent.sendDailyStatusNotification();
