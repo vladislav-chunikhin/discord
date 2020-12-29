@@ -1,5 +1,7 @@
 package ru.cosysoft.discord.discordbot.notification;
 
+import ru.cosysoft.discord.discordbot.notification.dto.DiscordNotificationDto;
+
 public interface NotificationComponent {
-    void sendDailyStatusNotification();
+    boolean sendDiscordMessage(DiscordNotificationDto dto);
 }
