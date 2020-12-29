@@ -15,7 +15,8 @@ public class DiscordWebhook {
     private final String url;
     private final String content;
     private final String username;
-    private final String avatarUrl;
+
+    private String avatarUrl;
 
     public void execute() throws IOException {
         final JSONObject json = new JSONObject();
@@ -27,7 +28,7 @@ public class DiscordWebhook {
         final URL url = new URL(this.url);
         final HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
         connection.addRequestProperty(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        connection.addRequestProperty(HttpHeaders.USER_AGENT, "Java-DiscordWebhook-BY-Gelox_");
+        connection.addRequestProperty(HttpHeaders.USER_AGENT, "Java-DiscordWebhook-By-Vladislav-Chunikhin");
         connection.setDoOutput(true);
         connection.setRequestMethod(HttpMethod.POST.name());
 
