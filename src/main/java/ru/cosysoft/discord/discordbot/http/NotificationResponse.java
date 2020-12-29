@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 
 @Getter
@@ -17,13 +16,14 @@ public class NotificationResponse {
     private Object data;
 
     public NotificationResponse() {
-        httpCode = HttpStatus.OK.value();
+        this.httpCode = HttpStatus.OK.value();
+        this.message = HttpStatus.OK.name();
     }
 
     public NotificationResponse(final Object data) {
         this.data = data;
-        httpCode = HttpStatus.OK.value();
-        message = StringUtils.EMPTY;
+        this.httpCode = HttpStatus.OK.value();
+        this.message = HttpStatus.OK.name();
     }
 
     public NotificationResponse(final int httpCode, final String message) {
