@@ -1,0 +1,97 @@
+package cv.vladislavchunikhin.discord.discord
+
+import cv.vladislavchunikhin.discord.discord.dto.ScheduleTaskDto
+import cv.vladislavchunikhin.discord.spock.BaseSpec
+import org.springframework.http.HttpStatus
+
+import java.util.concurrent.TimeUnit
+
+/**
+ * Unit tests for {@link ScheduledTaskComponentImpl}.
+ */
+class ScheduledTaskComponentImplTest extends BaseSpec {
+    private def testable = new ScheduledTaskComponentImpl()
+
+    /**
+     * Normal case.
+     * {@link ScheduledTaskComponentImpl#createScheduledTask(cv.vladislavchunikhin.discord.discord.dto.ScheduleTaskDto)}.
+     */
+    def "creating scheduled task in normal case"() {
+        given:
+        def taskMock = Mock(Runnable.class)
+        def inputDto = new ScheduleTaskDto(taskMock, 1, 1, TimeUnit.DAYS)
+        when:
+        def actualResult = testable.createScheduledTask(inputDto)
+        then:
+        testable.getScheduleExecutorsMap().containsKey(actualResult)
+    }
+
+    /**
+     * Normal case.
+     * {@link ScheduledTaskComponentImpl#turnOffTaskById(UUID)}.
+     */
+    def "turn offing scheduled task in normal case"() {
+        given:
+        def taskMock = Mock(Runnable.class)
+        def inputDto = new ScheduleTaskDto(taskMock, 1, 1, TimeUnit.DAYS)
+        def inputId = testable.createScheduledTask(inputDto)
+        when:
+        def actualResult = testable.turnOffTaskById(inputId)
+        then:
+        actualResult.code == HttpStatus.OK
+        actualResult.message == HttpStatus.OK.name()
+    }
+
+    /**
+     * There are not tasks.
+     * {@link ScheduledTaskComponentImpl#turnOffTaskById(UUID)}.
+     */
+    def "turn offing a scheduled task when there are not tasks to process"() {
+        given:
+        def inputId = UUID.randomUUID()
+        when:
+        def actualResult = testable.turnOffTaskById(inputId)
+        then:
+        actualResult.code == HttpStatus.NOT_FOUND
+        actualResult.message == "Schedule task not found by id = ${inputId}."
+    }
+
+    /**
+     * A scheduled task is already disabled.
+     * {@link ScheduledTaskComponentImpl#turnOffTaskById(UUID)}.
+     */
+    def "turn offing a scheduled task when it is already disabled"() {
+        given:
+        def taskMock = Mock(Runnable.class)
+        def inputDto = new ScheduleTaskDto(taskMock, 1, 1, TimeUnit.DAYS)
+        def inputId = testable.createScheduledTask(inputDto)
+        testable.turnOffAllTasks()
+        when:
+        def actualResult = testable.turnOffTaskById(inputId)
+        then:
+        actualResult.code == HttpStatus.OK
+        actualResult.message == "Schedule task is shutdown already."
+    }
+
+    /**
+     * Normal case.
+     * {@link ScheduledTaskComponentImpl#turnOffAllTasks}.
+     */
+    def "turn offing all scheduled tasks in normal case"() {
+        given:
+        def taskMock = Mock(Runnable.class)
+        def inputDto = new ScheduleTaskDto(taskMock, 1, 1, TimeUnit.DAYS)
+        def taskId = testable.createScheduledTask(inputDto)
+        when:
+        def actualResult = testable.turnOffAllTasks()
+        then:
+        actualResult.code == HttpStatus.OK
+        actualResult.message == HttpStatus.OK.name()
+        testable.getScheduleExecutorsMap().containsKey(taskId)
+        testable.getScheduleExecutorsMap().get(taskId).isShutdown()
+    }
+
+    def cleanup() {
+        testable.turnOffAllTasks()
+    }
+}
