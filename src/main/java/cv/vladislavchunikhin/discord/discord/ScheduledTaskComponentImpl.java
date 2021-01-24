@@ -14,7 +14,7 @@ import java.util.concurrent.ScheduledExecutorService;
 @Component
 @Slf4j
 public class ScheduledTaskComponentImpl implements ScheduledTaskComponent {
-    private final static Map<UUID, ScheduledExecutorService> SCHEDULE_EXECUTORS_MAP = new HashMap<>();
+    private static final Map<UUID, ScheduledExecutorService> SCHEDULE_EXECUTORS_MAP = new HashMap<>();
 
     @Override
     public UUID createScheduledTask(@NonNull final ScheduleTaskDto dto) {
