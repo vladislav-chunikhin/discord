@@ -1,4 +1,4 @@
-package cv.vladislavchunikhin.discord.discord.external;
+package cv.vladislavchunikhin.discord.discord.pojo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cv.vladislavchunikhin.discord.util.JsonPojo;

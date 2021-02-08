@@ -4,7 +4,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 
-import cv.vladislavchunikhin.discord.discord.external.DiscordPojo;
+import cv.vladislavchunikhin.discord.discord.pojo.DiscordPojo;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +17,7 @@ import cv.vladislavchunikhin.discord.discord.dto.DiscordDto;
 @Slf4j
 public class DiscordComponentImpl implements DiscordComponent {
     @Override
-    public boolean sendMessage(@NonNull final DiscordDto dto) {
+    public boolean sendNotification(@NonNull final DiscordDto dto) {
         final DiscordPojo json = new DiscordPojo(dto.getContent(), dto.getUsername(), dto.getAvatarUrl());
         try {
             final URL url = new URL(dto.getWebhookUrl());
@@ -36,7 +36,7 @@ public class DiscordComponentImpl implements DiscordComponent {
             connection.disconnect();
             return true;
         } catch (final Exception ex) {
-            log.error("DiscordComponent::sendMessage, error while sending", ex);
+            log.error("DiscordComponent::sendNotification, error while sending", ex);
             return false;
         }
     }

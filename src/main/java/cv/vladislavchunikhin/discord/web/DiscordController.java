@@ -2,7 +2,8 @@ package cv.vladislavchunikhin.discord.web;
 
 import cv.vladislavchunikhin.discord.http.GeneralResponse;
 import cv.vladislavchunikhin.discord.discord.DiscordService;
-import cv.vladislavchunikhin.discord.web.payload.DiscordDataPayload;
+import cv.vladislavchunikhin.discord.web.payload.DiscordDataTaskPayload;
+import cv.vladislavchunikhin.discord.web.payload.SimpleNotificationPayload;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,18 +12,22 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+/**
+ * Discord endpoints. */
 @RestController
-@RequestMapping("/api/notification")
+@RequestMapping("/api/discord")
 @RequiredArgsConstructor
-@Tag(name = "Notification API")
+@Tag(name = "Discord API")
 public class DiscordController extends BaseController {
+
     private final DiscordService discordService;
 
-    @Operation(summary = "Sending daily status to discord")
+    @Operation(summary = "One-time notification sending")
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200",
@@ -35,23 +40,44 @@ public class DiscordController extends BaseController {
             content = {@Content(schema = @Schema(implementation = GeneralResponse.class))}
         )
     })
-    @GetMapping("/daily-status/techforce")
-    public ResponseEntity<GeneralResponse> sendDailyStatusNotification() {
-        GeneralResponse response = discordService.sendMessage();
+    @PostMapping("/notification/send")
+    public ResponseEntity<GeneralResponse> sendNotification(@RequestBody final SimpleNotificationPayload payload) {
+        final GeneralResponse response = discordService.sendNotification(payload);
         return getApiResponse(response);
     }
 
-    @Operation(summary = "Making discord notification")
-    @PostMapping("/discord/create")
-    public ResponseEntity<GeneralResponse> createDiscordNotification(@RequestBody final DiscordDataPayload payload) {
-        GeneralResponse response = new GeneralResponse();
+    @Operation(summary = "Creating notification task")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Creating notification task is successfully",
+                    content = {@Content(schema = @Schema(implementation = GeneralResponse.class))}
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Creating notification task failed",
+                    content = {@Content(schema = @Schema(implementation = GeneralResponse.class))}
+            )
+    })
+    @PostMapping("/notification-task/create")
+    public ResponseEntity<GeneralResponse> createNotificationTask(@Validated @RequestBody final DiscordDataTaskPayload payload) {
+        GeneralResponse response = discordService.createNotificationTask(payload);
         return getApiResponse(response);
     }
 
-    @Operation(summary = "Turn offing task by id")
-    @PostMapping("/task/shutdown")
-    public ResponseEntity<GeneralResponse> shutdownTask(@RequestParam(value = "id") UUID id) {
-        GeneralResponse response = new GeneralResponse();
+    @Operation(summary = "Turn offing notification tasks")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Turn offing notification tasks is successfully",
+                    content = {@Content(schema = @Schema(implementation = GeneralResponse.class))}
+            )
+    })
+    @PostMapping("/notification-task/shutdown")
+    public ResponseEntity<GeneralResponse> shutdownNotificationTask(
+            @RequestParam(value = "id", required = false) UUID id
+    ) {
+        GeneralResponse response = discordService.shutdownNotificationTask(id);
         return getApiResponse(response);
     }
 }
