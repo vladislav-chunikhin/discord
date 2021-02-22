@@ -10,4 +10,5 @@ public class ScheduleTaskDto {
     private final long delay;
     private final long period;
     private final TimeUnit unit;
+    private final String description;
 }

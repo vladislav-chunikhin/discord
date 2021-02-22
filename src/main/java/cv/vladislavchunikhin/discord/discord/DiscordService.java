@@ -10,4 +10,5 @@ public interface DiscordService {
     GeneralResponse sendNotification(SimpleNotificationPayload payload);
     GeneralResponse createNotificationTask(DiscordDataTaskPayload payload);
     GeneralResponse shutdownNotificationTask(UUID id);
+    GeneralResponse getAllNotificationTasks();
 }

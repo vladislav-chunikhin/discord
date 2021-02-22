@@ -13,4 +13,5 @@ public class DiscordDataTaskPayload extends SimpleNotificationPayload {
     private DayOfWeek dayOfWeek;
     @Min(value = 0) @Max(value = 23)
     private Integer hours;
+    private String description;
 }

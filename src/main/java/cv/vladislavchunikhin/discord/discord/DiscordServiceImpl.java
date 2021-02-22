@@ -1,10 +1,7 @@
 package cv.vladislavchunikhin.discord.discord;
 
 import cv.vladislavchunikhin.discord.components.CommonProperties;
-import cv.vladislavchunikhin.discord.discord.dto.DiscordDto;
-import cv.vladislavchunikhin.discord.discord.dto.ScheduleTaskDto;
-import cv.vladislavchunikhin.discord.discord.dto.SecPeriodDto;
-import cv.vladislavchunikhin.discord.discord.dto.TimeCalculationDto;
+import cv.vladislavchunikhin.discord.discord.dto.*;
 import cv.vladislavchunikhin.discord.http.GeneralResponse;
 import cv.vladislavchunikhin.discord.http.HttpCodeWithMessageDto;
 import cv.vladislavchunikhin.discord.web.payload.DiscordDataTaskPayload;
@@ -16,7 +13,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -43,15 +40,26 @@ public class DiscordServiceImpl implements DiscordService {
         TimeCalculationDto timeCalculationDto = new TimeCalculationDto(payload.getDayOfWeek(), payload.getHours(), LocalDateTime.now().withNano(0));
         SecPeriodDto secPeriodDto = timeCalculationComponent.calculateSecPeriodFromNowToFixedTime(timeCalculationDto);
         Runnable task = () -> discordComponent.sendNotification(this.getDiscordDto(payload));
-        ScheduleTaskDto scheduleTaskDto = new ScheduleTaskDto(task, secPeriodDto.getDelay(), secPeriodDto.getPeriod(), TimeUnit.SECONDS);
+        ScheduleTaskDto scheduleTaskDto = new ScheduleTaskDto(task, secPeriodDto.getDelay(), secPeriodDto.getPeriod(), TimeUnit.SECONDS, payload.getDescription());
         UUID scheduledTask = scheduledTaskComponent.createScheduledTask(scheduleTaskDto);
         return new GeneralResponse(scheduledTask);
     }
 
     @Override
     public GeneralResponse shutdownNotificationTask(@Nullable UUID id) {
-        HttpCodeWithMessageDto dto = Optional.ofNullable(id).map(scheduledTaskComponent::turnOffTaskById).orElse(scheduledTaskComponent.turnOffAllTasks());
+        HttpCodeWithMessageDto dto;
+        if (id == null) {
+            dto = scheduledTaskComponent.turnOffAllTasks();
+        } else {
+            dto = scheduledTaskComponent.turnOffTaskById(id);
+        }
         return new GeneralResponse(dto.getCode().value(), dto.getMessage());
+    }
+
+    @Override
+    public GeneralResponse getAllNotificationTasks() {
+        final Map<UUID, ScheduledExecutorServiceDto> tasks = scheduledTaskComponent.getAllTasks();
+        return new GeneralResponse(tasks);
     }
 
     private DiscordDto getDiscordDto(@NonNull final SimpleNotificationPayload payload) {

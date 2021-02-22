@@ -1,5 +1,6 @@
 package cv.vladislavchunikhin.discord.discord;
 
+import cv.vladislavchunikhin.discord.discord.dto.ScheduledExecutorServiceDto;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,23 +15,23 @@ import java.util.concurrent.ScheduledExecutorService;
 @Component
 @Slf4j
 public class ScheduledTaskComponentImpl implements ScheduledTaskComponent {
-    private static final Map<UUID, ScheduledExecutorService> SCHEDULE_EXECUTORS_MAP = new HashMap<>();
+    private static final Map<UUID, ScheduledExecutorServiceDto> SCHEDULE_EXECUTORS_MAP = new HashMap<>();
 
     @Override
     public UUID createScheduledTask(@NonNull final ScheduleTaskDto dto) {
         ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         scheduledExecutorService.scheduleAtFixedRate(dto.getTask(), dto.getDelay(), dto.getPeriod(), dto.getUnit());
         UUID scheduleTaskId = UUID.randomUUID();
-        SCHEDULE_EXECUTORS_MAP.put(scheduleTaskId, scheduledExecutorService);
+        SCHEDULE_EXECUTORS_MAP.put(scheduleTaskId, new ScheduledExecutorServiceDto(scheduledExecutorService, dto.getDescription()));
         return scheduleTaskId;
     }
 
     @Override
     public HttpCodeWithMessageDto turnOffTaskById(final UUID id) {
         if (SCHEDULE_EXECUTORS_MAP.containsKey(id)) {
-            ScheduledExecutorService scheduledExecutorService = SCHEDULE_EXECUTORS_MAP.get(id);
-            if (!scheduledExecutorService.isShutdown()) {
-                scheduledExecutorService.shutdown();
+            ScheduledExecutorServiceDto dto = SCHEDULE_EXECUTORS_MAP.get(id);
+            if (!dto.getScheduledExecutorService().isShutdown()) {
+                dto.getScheduledExecutorService().shutdown();
                 log.info("Task by id = " + id + " turned off.");
                 return new HttpCodeWithMessageDto();
             }
@@ -46,16 +47,21 @@ public class ScheduledTaskComponentImpl implements ScheduledTaskComponent {
     @Override
     public HttpCodeWithMessageDto turnOffAllTasks() {
         if (!SCHEDULE_EXECUTORS_MAP.isEmpty()) {
-            Collection<ScheduledExecutorService> scheduledExecutorServices = SCHEDULE_EXECUTORS_MAP.values();
-            scheduledExecutorServices.stream().filter(Objects::nonNull).forEach(ScheduledExecutorService::shutdown);
+            Collection<ScheduledExecutorServiceDto> scheduledExecutorServices = SCHEDULE_EXECUTORS_MAP.values();
+            scheduledExecutorServices
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .map(ScheduledExecutorServiceDto::getScheduledExecutorService)
+                    .filter(Objects::nonNull)
+                    .forEach(ScheduledExecutorService::shutdown);
             log.info("Schedule tasks are turned off.");
             return new HttpCodeWithMessageDto();
         }
         return new HttpCodeWithMessageDto(HttpStatus.OK, "No schedule tasks found to turn off them.");
     }
 
-    public Map<UUID, ScheduledExecutorService> getScheduleExecutorsMap() {
+    @Override
+    public Map<UUID, ScheduledExecutorServiceDto> getAllTasks() {
         return SCHEDULE_EXECUTORS_MAP;
     }
-
 }

@@ -37,7 +37,7 @@ public class TimeCalculationComponentImpl implements TimeCalculationComponent {
     }
 
     /**
-     * @param now current day of week as {@link DayOfWeek}.
+     * @param now    current day of week as {@link DayOfWeek}.
      * @param target target day of week as {@link DayOfWeek}.
      * @return difference between days of week as seconds.
      */

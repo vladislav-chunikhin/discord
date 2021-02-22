@@ -80,5 +80,17 @@ public class DiscordController extends BaseController {
         GeneralResponse response = discordService.shutdownNotificationTask(id);
         return getApiResponse(response);
     }
+
+    @Operation(summary = "Getting all notification tasks")
+    @ApiResponse(
+            responseCode = "200",
+            description = "Getting is successfully",
+            content = {@Content(schema = @Schema(implementation = GeneralResponse.class))}
+    )
+    @GetMapping("/notification-task")
+    public ResponseEntity<GeneralResponse> getAllNotificationTasks() {
+        GeneralResponse response = discordService.getAllNotificationTasks();
+        return getApiResponse(response);
+    }
 }
 

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 class ScheduleTaskDtoTest {
@@ -19,10 +20,11 @@ class ScheduleTaskDtoTest {
     @Test
     public void constructorWithAllFields() {
         Runnable expectedTaskMock = Mockito.mock(Runnable.class);
+        String description = UUID.randomUUID().toString();
         long expectedDelay = 4;
         long expectedPeriod = 2;
         TimeUnit expectedTimeUnit = TimeUnit.DAYS;
-        testable = new ScheduleTaskDto(expectedTaskMock, expectedDelay, expectedPeriod, expectedTimeUnit);
+        testable = new ScheduleTaskDto(expectedTaskMock, expectedDelay, expectedPeriod, expectedTimeUnit, description);
         Assertions.assertEquals(testable.getDelay(), expectedDelay);
         Assertions.assertEquals(testable.getTask(), expectedTaskMock);
         Assertions.assertEquals(testable.getPeriod(), expectedPeriod);

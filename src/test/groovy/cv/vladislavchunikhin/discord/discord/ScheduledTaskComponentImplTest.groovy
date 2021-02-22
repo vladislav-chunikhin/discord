@@ -19,11 +19,12 @@ class ScheduledTaskComponentImplTest extends BaseSpec {
     def "creating scheduled task in normal case"() {
         given:
         def taskMock = Mock(Runnable.class)
-        def inputDto = new ScheduleTaskDto(taskMock, 1, 1, TimeUnit.DAYS)
+        def description = UUID.randomUUID().toString()
+        def inputDto = new ScheduleTaskDto(taskMock, 1, 1, TimeUnit.DAYS, description)
         when:
         def actualResult = testable.createScheduledTask(inputDto)
         then:
-        testable.getScheduleExecutorsMap().containsKey(actualResult)
+        testable.getAllTasks().containsKey(actualResult)
     }
 
     /**
@@ -33,7 +34,8 @@ class ScheduledTaskComponentImplTest extends BaseSpec {
     def "turn offing scheduled task in normal case"() {
         given:
         def taskMock = Mock(Runnable.class)
-        def inputDto = new ScheduleTaskDto(taskMock, 1, 1, TimeUnit.DAYS)
+        def description = UUID.randomUUID().toString()
+        def inputDto = new ScheduleTaskDto(taskMock, 1, 1, TimeUnit.DAYS, description)
         def inputId = testable.createScheduledTask(inputDto)
         when:
         def actualResult = testable.turnOffTaskById(inputId)
@@ -63,7 +65,8 @@ class ScheduledTaskComponentImplTest extends BaseSpec {
     def "turn offing a scheduled task when it is already disabled"() {
         given:
         def taskMock = Mock(Runnable.class)
-        def inputDto = new ScheduleTaskDto(taskMock, 1, 1, TimeUnit.DAYS)
+        def description = UUID.randomUUID().toString()
+        def inputDto = new ScheduleTaskDto(taskMock, 1, 1, TimeUnit.DAYS, description)
         def inputId = testable.createScheduledTask(inputDto)
         testable.turnOffAllTasks()
         when:
@@ -80,15 +83,16 @@ class ScheduledTaskComponentImplTest extends BaseSpec {
     def "turn offing all scheduled tasks in normal case"() {
         given:
         def taskMock = Mock(Runnable.class)
-        def inputDto = new ScheduleTaskDto(taskMock, 1, 1, TimeUnit.DAYS)
+        def description = UUID.randomUUID().toString()
+        def inputDto = new ScheduleTaskDto(taskMock, 1, 1, TimeUnit.DAYS, description)
         def taskId = testable.createScheduledTask(inputDto)
         when:
         def actualResult = testable.turnOffAllTasks()
         then:
         actualResult.code == HttpStatus.OK
         actualResult.message == HttpStatus.OK.name()
-        testable.getScheduleExecutorsMap().containsKey(taskId)
-        testable.getScheduleExecutorsMap().get(taskId).isShutdown()
+        testable.getAllTasks().containsKey(taskId)
+        testable.getAllTasks().get(taskId).getScheduledExecutorService().isShutdown()
     }
 
     def cleanup() {
