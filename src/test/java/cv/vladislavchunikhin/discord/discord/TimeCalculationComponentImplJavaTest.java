@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 public class TimeCalculationComponentImplJavaTest {
 
-    private TimeCalculationComponent testable = Mockito.spy(TimeCalculationComponentImpl.class);
+    private final TimeCalculationComponent testable = Mockito.spy(TimeCalculationComponentImpl.class);
 
     @ParameterizedTest
     @MethodSource("calculateSecPeriodFromNowToFixedTimeProvider")

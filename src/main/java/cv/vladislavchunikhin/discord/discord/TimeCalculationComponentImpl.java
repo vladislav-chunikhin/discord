@@ -10,9 +10,16 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+/**
+ * Component that calculates time for tasks.
+ */
 @Component
 public class TimeCalculationComponentImpl implements TimeCalculationComponent {
 
+    /**
+     * @param dto initial data to calculate necessary period for a task.
+     * @return required period with delay.
+     */
     @Override
     public SecPeriodDto calculateSecPeriodFromNowToFixedTime(@NonNull final TimeCalculationDto dto) {
         LocalDateTime nextTime = dto.getCurrentTime().withHour(dto.getHours()).withMinute(0).withSecond(0).withNano(0);
@@ -29,17 +36,36 @@ public class TimeCalculationComponentImpl implements TimeCalculationComponent {
         return new SecPeriodDto(dayDelayInSeconds, period);
     }
 
+    /**
+     * @param now current day of week as {@link DayOfWeek}.
+     * @param target target day of week as {@link DayOfWeek}.
+     * @return difference between days of week as seconds.
+     */
     private long getDelayInSeconds(@Nullable final DayOfWeek now, @Nullable final DayOfWeek target) {
         if (now == null || target == null) return 0;
         if (now == target) return 0;
         int nowValue = now.getValue();
         int targetValue = target.getValue();
-        if (nowValue > targetValue) return calculateDelayInSeconds(targetValue, nowValue);
         return calculateDelayInSeconds(nowValue, targetValue);
     }
 
-    private long calculateDelayInSeconds(int min, int max) {
-        int dayDiff = (DayOfWeek.values().length + (min - max)) % DayOfWeek.values().length;
+    /**
+     * @param now    current day of week as int value.
+     * @param target target day of week as int value.
+     * @return difference between days of week as seconds.
+     */
+    private long calculateDelayInSeconds(int now, int target) {
+        int dayDiff;
+        if (target > now) {
+            dayDiff = target - now;
+        } else {
+            if (now == DayOfWeek.values().length) {
+                dayDiff = target;
+            } else {
+                int restDaysToEndOfWeek = DayOfWeek.values().length - now;
+                dayDiff = restDaysToEndOfWeek + target;
+            }
+        }
         return Duration.ofDays(1).toSeconds() * dayDiff;
     }
 }
