@@ -18,7 +18,7 @@ class ScheduleTaskDtoTest {
     }
 
     @Test
-    public void constructorWithAllFields() {
+    void constructorWithAllFields() {
         Runnable expectedTaskMock = Mockito.mock(Runnable.class);
         String description = UUID.randomUUID().toString();
         long expectedDelay = 4;
