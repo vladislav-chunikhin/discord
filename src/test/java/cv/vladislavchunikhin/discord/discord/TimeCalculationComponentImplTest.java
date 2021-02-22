@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.stream.Stream;
 
-public class TimeCalculationComponentImplJavaTest {
+public class TimeCalculationComponentImplTest {
 
     private final TimeCalculationComponent testable = Mockito.spy(TimeCalculationComponentImpl.class);
 

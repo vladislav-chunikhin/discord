@@ -11,7 +11,7 @@ import java.time.Month
 /**
  * Unit tests for {@link TimeCalculationComponentImpl}.
  */
-class TimeCalculationComponentImplTest extends BaseSpec {
+class TimeCalculationComponentImplSpec extends BaseSpec {
 
     private TimeCalculationComponent testable = new TimeCalculationComponentImpl()
 

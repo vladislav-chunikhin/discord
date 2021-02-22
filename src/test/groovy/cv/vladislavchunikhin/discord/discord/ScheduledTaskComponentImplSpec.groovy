@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Unit tests for {@link ScheduledTaskComponentImpl}.
  */
-class ScheduledTaskComponentImplTest extends BaseSpec {
+class ScheduledTaskComponentImplSpec extends BaseSpec {
     private def testable = new ScheduledTaskComponentImpl()
 
     /**
