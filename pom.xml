@@ -31,11 +31,6 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
@@ -69,6 +64,7 @@
             <scope>test</scope>
         </dependency>
 
+        <!--You need the Vintage test engine to execute Spock tests since they are based on JUnit 4, and you need the Jupiter test engine to execute the JUnit Jupiter tests.-->
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
@@ -85,6 +81,7 @@
             </plugin>
 
             <!-- Mandatory plugins for using Spock -->
+            <!-- It uses the gmavenplus-plugin to compile the Groovy test files and the maven-surefire-plugin to specify the file naming pattern of the tests that are supposed to be run. -->
             <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>
                 <artifactId>gmavenplus-plugin</artifactId>
@@ -98,9 +95,14 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.1</version>
+                <configuration>
+                    <useFile>false</useFile>
+                    <includes>
+                        <include>**/*Spec.java</include>
+                        <include>**/*Test.java</include>
+                    </includes>
+                </configuration>
             </plugin>
 
             <plugin>
