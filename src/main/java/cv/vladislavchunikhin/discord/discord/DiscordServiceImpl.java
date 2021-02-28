@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class DiscordServiceImpl implements DiscordService {
     public static final String ERROR_MESSAGE_WHEN_NOTIFICATION_SENDING = "Sending message failed. To find out detailed reason you should look through server logs.";
     private static final String MESSAGE_TEMPLATE = "%s \nAnnouncement: %s";
-    private static final String USER_AGENT = "Java-DiscordWebhook-By-Vladislav-Chunikhin";
+    public static final String USER_AGENT = "Java-DiscordWebhook-By-Vladislav-Chunikhin";
 
     private final DiscordProperties properties;
     private final DiscordComponent discordComponent;
