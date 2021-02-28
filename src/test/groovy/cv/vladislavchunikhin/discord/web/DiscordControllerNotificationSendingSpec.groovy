@@ -2,20 +2,19 @@ package cv.vladislavchunikhin.discord.web
 
 import cv.vladislavchunikhin.discord.discord.DiscordComponent
 import cv.vladislavchunikhin.discord.discord.DiscordServiceImpl
-import cv.vladislavchunikhin.discord.discord.dto.DiscordDto
 import cv.vladislavchunikhin.discord.properties.DiscordProperties
-import cv.vladislavchunikhin.discord.spock.ApiBaseSpec
+import cv.vladislavchunikhin.discord.spock.mock.DiscordComponentMockerSpec
 import cv.vladislavchunikhin.discord.web.payload.SimpleNotificationPayload
 import org.spockframework.spring.SpringBean
 
-class DiscordControllerSpec extends ApiBaseSpec {
+class DiscordControllerNotificationSendingSpec extends DiscordComponentMockerSpec {
     @SpringBean DiscordComponent discordComponent = Mock()
     @SpringBean DiscordProperties discordProperties = Spy()
 
     def "successful notification sending"() {
         given:
         def payload = getPayload()
-        this.mockNotificationSending(true, payload)
+        this.mockNotificationSending(1,true, payload)
         when:
         def resultActions = this.performPost(NOTIFICATION_SENDING_URL, payload)
         then:
@@ -29,7 +28,7 @@ class DiscordControllerSpec extends ApiBaseSpec {
     def "notification sending failed"() {
         given:
         def payload = getPayload()
-        this.mockNotificationSending(false, payload)
+        this.mockNotificationSending(1,false, payload)
         when:
         def resultActions = this.performPost(NOTIFICATION_SENDING_URL, payload)
         then:
@@ -48,19 +47,5 @@ class DiscordControllerSpec extends ApiBaseSpec {
 
     private static SimpleNotificationPayload getPayload() {
         return getPayload(null)
-    }
-
-    private void mockNotificationSending(boolean expectedResult, final SimpleNotificationPayload payload) {
-        1 * discordComponent.sendNotification({
-            DiscordDto dto ->
-                (
-                        dto.content != null
-                                && dto.content.contains(payload.getContent())
-                                && dto.userAgent == DiscordServiceImpl.USER_AGENT
-                                && dto.avatarUrl == null
-                                && dto.webhookUrl == discordProperties.webhookUrl
-                                && dto.username == discordProperties.username
-                )
-        }) >> expectedResult
     }
 }

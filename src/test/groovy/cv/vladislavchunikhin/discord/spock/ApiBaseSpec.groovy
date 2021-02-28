@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 class ApiBaseSpec extends IntegrationBaseSpec {
     private String BASE_URL = "/api/discord"
     protected String NOTIFICATION_SENDING_URL = "${BASE_URL}/notification/send"
+    protected String NOTIFICATION_TASK_CREATING_URL = "${BASE_URL}/notification-task/create"
 
     protected ResultActions performGet(final String url) throws Exception {
         return this.mvc

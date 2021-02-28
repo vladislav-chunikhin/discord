@@ -16,7 +16,7 @@ class ScheduledTaskComponentImplSpec extends BaseSpec {
      * Normal case.
      * {@link ScheduledTaskComponentImpl#createScheduledTask(cv.vladislavchunikhin.discord.discord.dto.ScheduleTaskDto)}.
      */
-    def "creating scheduled task in normal case"() {
+    def "creating scheduled task in the usual case"() {
         given:
         def taskMock = Mock(Runnable.class)
         def description = UUID.randomUUID().toString()
@@ -31,7 +31,7 @@ class ScheduledTaskComponentImplSpec extends BaseSpec {
      * Normal case.
      * {@link ScheduledTaskComponentImpl#turnOffTaskById(UUID)}.
      */
-    def "turn offing scheduled task in normal case"() {
+    def "turn offing scheduled task in the usual case"() {
         given:
         def taskMock = Mock(Runnable.class)
         def description = UUID.randomUUID().toString()
@@ -80,7 +80,7 @@ class ScheduledTaskComponentImplSpec extends BaseSpec {
      * Normal case.
      * {@link ScheduledTaskComponentImpl#turnOffAllTasks}.
      */
-    def "turn offing all scheduled tasks in normal case"() {
+    def "turn offing all scheduled tasks in the usual case"() {
         given:
         def taskMock = Mock(Runnable.class)
         def description = UUID.randomUUID().toString()
