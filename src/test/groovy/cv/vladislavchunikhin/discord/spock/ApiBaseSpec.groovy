@@ -33,7 +33,11 @@ class ApiBaseSpec extends IntegrationBaseSpec {
     }
 
     protected static void checkResultOnSuccessful(final ResultActions resultActions) {
-        resultActions.andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+        resultActions.andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+    }
+
+    protected static void checkResultOnServerError(final ResultActions resultActions) {
+        resultActions.andExpect(MockMvcResultMatchers.status().is5xxServerError());
     }
 
     protected GeneralResponse parseToGenericResponse(final ResultActions resultActions) {

@@ -1,6 +1,6 @@
 package cv.vladislavchunikhin.discord.discord;
 
-import cv.vladislavchunikhin.discord.components.CommonProperties;
+import cv.vladislavchunikhin.discord.properties.DiscordProperties;
 import cv.vladislavchunikhin.discord.discord.dto.*;
 import cv.vladislavchunikhin.discord.http.GeneralResponse;
 import cv.vladislavchunikhin.discord.http.HttpCodeWithMessageDto;
@@ -20,11 +20,11 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 public class DiscordServiceImpl implements DiscordService {
-    private static final String ERROR_MESSAGE_WHEN_NOTIFICATION_SENDING = "Sending message failed. To find out detailed reason you should look through server logs.";
+    public static final String ERROR_MESSAGE_WHEN_NOTIFICATION_SENDING = "Sending message failed. To find out detailed reason you should look through server logs.";
     private static final String MESSAGE_TEMPLATE = "%s \nAnnouncement: %s";
     private static final String USER_AGENT = "Java-DiscordWebhook-By-Vladislav-Chunikhin";
 
-    private final CommonProperties properties;
+    private final DiscordProperties properties;
     private final DiscordComponent discordComponent;
     private final ScheduledTaskComponent scheduledTaskComponent;
     private final TimeCalculationComponent timeCalculationComponent;
