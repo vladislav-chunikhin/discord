@@ -7,11 +7,10 @@ import cv.vladislavchunikhin.discord.properties.DiscordProperties
 import cv.vladislavchunikhin.discord.spock.ApiBaseSpec
 import cv.vladislavchunikhin.discord.web.payload.SimpleNotificationPayload
 import org.spockframework.spring.SpringBean
-import org.springframework.beans.factory.annotation.Autowired
 
 class DiscordControllerSpec extends ApiBaseSpec {
     @SpringBean DiscordComponent discordComponent = Mock()
-    @Autowired DiscordProperties discordProperties
+    @SpringBean DiscordProperties discordProperties = Spy()
 
     def "successful notification sending"() {
         given:
@@ -20,6 +19,7 @@ class DiscordControllerSpec extends ApiBaseSpec {
         when:
         def resultActions = this.performPost(NOTIFICATION_SENDING_URL, payload)
         then:
+        1 * discordProperties.getMention()
         checkResultOnSuccessful(resultActions)
         def response = this.parseToGenericResponse(resultActions)
         response.getData() == null
@@ -33,6 +33,7 @@ class DiscordControllerSpec extends ApiBaseSpec {
         when:
         def resultActions = this.performPost(NOTIFICATION_SENDING_URL, payload)
         then:
+        1 * discordProperties.getMention()
         checkResultOnServerError(resultActions)
         def response = this.parseToGenericResponse(resultActions)
         response.getData() == null
