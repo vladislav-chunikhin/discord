@@ -70,13 +70,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--You need the Vintage test engine to execute Spock tests since they are based on JUnit 4, and you need the Jupiter test engine to execute the JUnit Jupiter tests.-->
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>

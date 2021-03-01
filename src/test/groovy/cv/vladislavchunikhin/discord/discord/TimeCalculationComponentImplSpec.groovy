@@ -15,8 +15,8 @@ class TimeCalculationComponentImplSpec extends BaseSpec {
 
     private TimeCalculationComponent testable = new TimeCalculationComponentImpl()
 
-    @Shared LocalDateTime currentTimeFirstCase = LocalDateTime.of(2021, Month.JANUARY, 4, 2, 23)
-    @Shared LocalDateTime currentTimeSecondCase = LocalDateTime.of(2021, Month.JANUARY, 6, 5, 33)
+    @Shared private LocalDateTime currentTimeFirstCase = LocalDateTime.of(2021, Month.JANUARY, 4, 2, 23)
+    @Shared private LocalDateTime currentTimeSecondCase = LocalDateTime.of(2021, Month.JANUARY, 6, 5, 33)
 
     /**
      * Only Monday, the same day as now.
