@@ -9,17 +9,23 @@ import spock.lang.Shared
 
 import java.time.DayOfWeek
 
+/**
+ * Integration tests for {@link DiscordController#createNotificationTask}.
+ */
 class DiscordControllerNotificationTaskCreatingSpec extends ApiBaseSpec {
     @SpringBean DiscordComponent discordComponent = Mock()
     @Shared sql = Sql.newInstance("jdbc:h2:mem:", "org.h2.Driver" )
 
-    def "creating notification task"() {
+    def "notification creation task"() {
         given:
-        def payload = getPayload(dayOfWeek, hours)
+        def payload = getPayload(dayOfWeek as DayOfWeek, hours)
         when:
         def resultActions = this.performPost(NOTIFICATION_TASK_CREATING_URL, payload)
         then:
         checkResultOnSuccessful(resultActions)
+        def response = this.parseToGeneralResponse(resultActions)
+        response.message == "OK"
+        response.data != null
         where:
         [dayOfWeek, hours] << [
                 [DayOfWeek.MONDAY, 0],
@@ -46,6 +52,20 @@ class DiscordControllerNotificationTaskCreatingSpec extends ApiBaseSpec {
                 [DayOfWeek.SATURDAY, 14],
                 [DayOfWeek.SUNDAY, 14]
         ]
+    }
+
+    def "notification creation task test with sql query"() {
+        given:
+        def payload = getPayload(DayOfWeek.of(dayOfWeek as int), hours as int)
+        when:
+        def resultActions = this.performPost(NOTIFICATION_TASK_CREATING_URL, payload)
+        then:
+        checkResultOnSuccessful(resultActions)
+        def response = this.parseToGeneralResponse(resultActions)
+        response.message == "OK"
+        response.data != null
+        where:
+        [dayOfWeek, hours] << sql.rows("SELECT 3 AS dayOfWeek, 12 AS hours")
     }
 
     private static DiscordDataTaskPayload getPayload(final DayOfWeek dayOfWeek, final Integer hours) {

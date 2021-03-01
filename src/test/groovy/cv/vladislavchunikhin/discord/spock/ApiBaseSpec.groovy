@@ -41,7 +41,7 @@ class ApiBaseSpec extends IntegrationBaseSpec {
         resultActions.andExpect(MockMvcResultMatchers.status().is5xxServerError());
     }
 
-    protected GeneralResponse parseToGenericResponse(final ResultActions resultActions) {
+    protected GeneralResponse parseToGeneralResponse(final ResultActions resultActions) {
         final String contentAsString = resultActions.andReturn().getResponse().getContentAsString()
         return this.objectMapper.readValue(contentAsString, GeneralResponse.class)
     }

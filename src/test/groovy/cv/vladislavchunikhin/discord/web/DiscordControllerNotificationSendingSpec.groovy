@@ -7,6 +7,9 @@ import cv.vladislavchunikhin.discord.spock.mock.DiscordComponentMockerSpec
 import cv.vladislavchunikhin.discord.web.payload.SimpleNotificationPayload
 import org.spockframework.spring.SpringBean
 
+/**
+ * Integration tests for {@link DiscordController#sendNotification}.
+ */
 class DiscordControllerNotificationSendingSpec extends DiscordComponentMockerSpec {
     @SpringBean DiscordComponent discordComponent = Mock()
     @SpringBean DiscordProperties discordProperties = Spy()
@@ -20,7 +23,7 @@ class DiscordControllerNotificationSendingSpec extends DiscordComponentMockerSpe
         then:
         1 * discordProperties.getMention()
         checkResultOnSuccessful(resultActions)
-        def response = this.parseToGenericResponse(resultActions)
+        def response = this.parseToGeneralResponse(resultActions)
         response.getData() == null
         response.getMessage() == "OK"
     }
@@ -34,7 +37,7 @@ class DiscordControllerNotificationSendingSpec extends DiscordComponentMockerSpe
         then:
         1 * discordProperties.getMention()
         checkResultOnServerError(resultActions)
-        def response = this.parseToGenericResponse(resultActions)
+        def response = this.parseToGeneralResponse(resultActions)
         response.getData() == null
         response.getMessage() == DiscordServiceImpl.ERROR_MESSAGE_WHEN_NOTIFICATION_SENDING
     }
