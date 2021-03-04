@@ -17,11 +17,23 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * General discord service containing all business methods.
+ */
 @Service
 @RequiredArgsConstructor
 public class DiscordServiceImpl implements DiscordService {
+    /**
+     * Error message that throws if notification sending failed.
+     */
     public static final String ERROR_MESSAGE_WHEN_NOTIFICATION_SENDING = "Sending message failed. To find out detailed reason you should look through server logs.";
+    /**
+     * Message template for discord notification content.
+     */
     private static final String MESSAGE_TEMPLATE = "%s \nAnnouncement: %s";
+    /**
+     * User agent value.
+     */
     public static final String USER_AGENT = "Java-DiscordWebhook-By-Vladislav-Chunikhin";
 
     private final DiscordProperties properties;

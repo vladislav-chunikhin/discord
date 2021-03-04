@@ -13,9 +13,17 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import cv.vladislavchunikhin.discord.discord.dto.DiscordDto;
 
+/**
+ * Implementation of {@link DiscordComponent}.
+ */
 @Component
 @Slf4j
 public class DiscordComponentImpl implements DiscordComponent {
+
+    /**
+     * @param dto discord data transfer object to execute something.
+     * @return flag that indicate successful or failed method result.
+     */
     @Override
     public boolean sendNotification(@NonNull final DiscordDto dto) {
         final DiscordPojo json = new DiscordPojo(dto.getContent(), dto.getUsername(), dto.getAvatarUrl());
