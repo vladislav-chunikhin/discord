@@ -18,7 +18,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
- * General discord service containing all business methods.
+ * Implementation of {@link DiscordService}.
  */
 @Service
 @RequiredArgsConstructor
@@ -35,18 +35,37 @@ public class DiscordServiceImpl implements DiscordService {
      * User agent value.
      */
     public static final String USER_AGENT = "Java-DiscordWebhook-By-Vladislav-Chunikhin";
-
+    /**
+     * Discord properties.
+     */
     private final DiscordProperties properties;
+    /**
+     * Component containing some methods for Discord API.
+     */
     private final DiscordComponent discordComponent;
+    /**
+     * Component for working with scheduled tasks.
+     */
     private final ScheduledTaskComponent scheduledTaskComponent;
+    /**
+     * Component that calculates time for tasks.
+     */
     private final TimeCalculationComponent timeCalculationComponent;
 
+    /**
+     * @param payload payload for notification sending.
+     * @return if notification sending is successful then default {@link GeneralResponse} else http code = 500 plus error message.
+     */
     @Override
     public GeneralResponse sendNotification(@NonNull final SimpleNotificationPayload payload) {
         boolean sendingIsSuccess = discordComponent.sendNotification(this.getDiscordDto(payload));
         return sendingIsSuccess ? new GeneralResponse() : new GeneralResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_MESSAGE_WHEN_NOTIFICATION_SENDING);
     }
 
+    /**
+     * @param payload payload for notification task creating.
+     * @return {@link GeneralResponse} with task id as UUID.
+     */
     @Override
     public GeneralResponse createNotificationTask(@NonNull final DiscordDataTaskPayload payload) {
         TimeCalculationDto timeCalculationDto = new TimeCalculationDto(payload.getDayOfWeek(), payload.getHours(), LocalDateTime.now().withNano(0));
@@ -57,6 +76,11 @@ public class DiscordServiceImpl implements DiscordService {
         return new GeneralResponse(scheduledTask);
     }
 
+    /**
+     * If id is null all tasks will be disabled, otherwise by id.
+     * @param id identifier of recurring task.
+     * @return {@link GeneralResponse} with http code and relevant message.
+     */
     @Override
     public GeneralResponse shutdownNotificationTask(@Nullable UUID id) {
         HttpCodeWithMessageDto dto;
@@ -68,12 +92,19 @@ public class DiscordServiceImpl implements DiscordService {
         return new GeneralResponse(dto.getCode().value(), dto.getMessage());
     }
 
+    /**
+     * @return {@link GeneralResponse} with all tasks as map.
+     */
     @Override
     public GeneralResponse getAllNotificationTasks() {
         final Map<UUID, ScheduledExecutorServiceDto> tasks = scheduledTaskComponent.getAllTasks();
         return new GeneralResponse(tasks);
     }
 
+    /**
+     * @param payload {@link SimpleNotificationPayload}.
+     * @return {@link DiscordDto}.
+     */
     private DiscordDto getDiscordDto(@NonNull final SimpleNotificationPayload payload) {
         final String content = String.format(MESSAGE_TEMPLATE, properties.getMention(), payload.getContent());
         return new DiscordDto(properties.getWebhookUrl(), content, properties.getUsername(), USER_AGENT);
