@@ -1,9 +1,10 @@
 package cv.vladislavchunikhin.discord.discord;
 
+import cv.vladislavchunikhin.discord.http.ErrorType;
+import cv.vladislavchunikhin.discord.http.ResponseAPI;
 import cv.vladislavchunikhin.discord.properties.DiscordProperties;
 import cv.vladislavchunikhin.discord.discord.dto.*;
 import cv.vladislavchunikhin.discord.http.GeneralResponse;
-import cv.vladislavchunikhin.discord.http.HttpCodeWithMessageDto;
 import cv.vladislavchunikhin.discord.web.payload.DiscordDataTaskPayload;
 import cv.vladislavchunikhin.discord.web.payload.SimpleNotificationPayload;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +60,9 @@ public class DiscordServiceImpl implements DiscordService {
     @Override
     public GeneralResponse sendNotification(@NonNull final SimpleNotificationPayload payload) {
         boolean sendingIsSuccess = discordComponent.sendNotification(this.getDiscordDto(payload));
-        return sendingIsSuccess ? new GeneralResponse() : new GeneralResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), ERROR_MESSAGE_WHEN_NOTIFICATION_SENDING);
+        return sendingIsSuccess
+                ? ResponseAPI.emptyPositiveResponse()
+                : ResponseAPI.negativeResponse(HttpStatus.INTERNAL_SERVER_ERROR, ERROR_MESSAGE_WHEN_NOTIFICATION_SENDING, ErrorType.DISCORD_ERROR);
     }
 
     /**
@@ -70,10 +73,11 @@ public class DiscordServiceImpl implements DiscordService {
     public GeneralResponse createNotificationTask(@NonNull final DiscordDataTaskPayload payload) {
         TimeCalculationDto timeCalculationDto = new TimeCalculationDto(payload.getDayOfWeek(), payload.getHours(), LocalDateTime.now().withNano(0));
         SecPeriodDto secPeriodDto = timeCalculationComponent.calculateSecPeriodFromNowToFixedTime(timeCalculationDto);
+        //todo need to check result.
         Runnable task = () -> discordComponent.sendNotification(this.getDiscordDto(payload));
         ScheduleTaskDto scheduleTaskDto = new ScheduleTaskDto(task, secPeriodDto.getDelay(), secPeriodDto.getPeriod(), TimeUnit.SECONDS, payload.getDescription());
         UUID scheduledTask = scheduledTaskComponent.createScheduledTask(scheduleTaskDto);
-        return new GeneralResponse(scheduledTask);
+        return ResponseAPI.positiveResponse(scheduledTask);
     }
 
     /**
@@ -82,14 +86,12 @@ public class DiscordServiceImpl implements DiscordService {
      * @return {@link GeneralResponse} with http code and relevant message.
      */
     @Override
-    public GeneralResponse shutdownNotificationTask(@Nullable UUID id) {
-        HttpCodeWithMessageDto dto;
+    public GeneralResponse shutdownNotificationTask(@Nullable final UUID id) {
         if (id == null) {
-            dto = scheduledTaskComponent.turnOffAllTasks();
+            return scheduledTaskComponent.turnOffAllTasks();
         } else {
-            dto = scheduledTaskComponent.turnOffTaskById(id);
+            return scheduledTaskComponent.turnOffTaskById(id);
         }
-        return new GeneralResponse(dto.getCode().value(), dto.getMessage());
     }
 
     /**
@@ -98,7 +100,7 @@ public class DiscordServiceImpl implements DiscordService {
     @Override
     public GeneralResponse getAllNotificationTasks() {
         final Map<UUID, ScheduledExecutorServiceDto> tasks = scheduledTaskComponent.getAllTasks();
-        return new GeneralResponse(tasks);
+        return ResponseAPI.positiveResponse(tasks);
     }
 
     /**
