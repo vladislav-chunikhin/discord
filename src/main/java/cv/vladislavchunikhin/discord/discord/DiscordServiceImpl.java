@@ -1,6 +1,6 @@
 package cv.vladislavchunikhin.discord.discord;
 
-import cv.vladislavchunikhin.discord.http.ErrorType;
+import cv.vladislavchunikhin.discord.http.code.ErrorType;
 import cv.vladislavchunikhin.discord.http.ResponseAPI;
 import cv.vladislavchunikhin.discord.properties.DiscordProperties;
 import cv.vladislavchunikhin.discord.discord.dto.*;
@@ -73,7 +73,6 @@ public class DiscordServiceImpl implements DiscordService {
     public GeneralResponse createNotificationTask(@NonNull final DiscordDataTaskPayload payload) {
         TimeCalculationDto timeCalculationDto = new TimeCalculationDto(payload.getDayOfWeek(), payload.getHours(), LocalDateTime.now().withNano(0));
         SecPeriodDto secPeriodDto = timeCalculationComponent.calculateSecPeriodFromNowToFixedTime(timeCalculationDto);
-        //todo need to check result.
         Runnable task = () -> discordComponent.sendNotification(this.getDiscordDto(payload));
         ScheduleTaskDto scheduleTaskDto = new ScheduleTaskDto(task, secPeriodDto.getDelay(), secPeriodDto.getPeriod(), TimeUnit.SECONDS, payload.getDescription());
         UUID scheduledTask = scheduledTaskComponent.createScheduledTask(scheduleTaskDto);

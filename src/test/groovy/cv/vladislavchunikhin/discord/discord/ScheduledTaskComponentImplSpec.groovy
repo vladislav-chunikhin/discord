@@ -1,6 +1,8 @@
 package cv.vladislavchunikhin.discord.discord
 
 import cv.vladislavchunikhin.discord.discord.dto.ScheduleTaskDto
+import cv.vladislavchunikhin.discord.http.code.ErrorType
+import cv.vladislavchunikhin.discord.http.NegativeResponse
 import cv.vladislavchunikhin.discord.spock.BaseSpec
 import org.springframework.http.HttpStatus
 
@@ -40,8 +42,7 @@ class ScheduledTaskComponentImplSpec extends BaseSpec {
         when:
         def actualResult = testable.turnOffTaskById(inputId)
         then:
-        actualResult.code == HttpStatus.OK
-        actualResult.message == HttpStatus.OK.name()
+        actualResult.httpCode == HttpStatus.OK
     }
 
     /**
@@ -54,8 +55,9 @@ class ScheduledTaskComponentImplSpec extends BaseSpec {
         when:
         def actualResult = testable.turnOffTaskById(inputId)
         then:
-        actualResult.code == HttpStatus.NOT_FOUND
-        actualResult.message == "Schedule task not found by id = ${inputId}."
+        actualResult.httpCode == HttpStatus.NOT_FOUND
+        ((NegativeResponse) actualResult).message == "Schedule task not found by id = ${inputId}."
+        ((NegativeResponse) actualResult).errorType == ErrorType.INTERNAL_SERVER_ERROR
     }
 
     /**
@@ -72,8 +74,7 @@ class ScheduledTaskComponentImplSpec extends BaseSpec {
         when:
         def actualResult = testable.turnOffTaskById(inputId)
         then:
-        actualResult.code == HttpStatus.OK
-        actualResult.message == "Schedule task is shutdown already."
+        actualResult.httpCode == HttpStatus.OK
     }
 
     /**
@@ -89,8 +90,7 @@ class ScheduledTaskComponentImplSpec extends BaseSpec {
         when:
         def actualResult = testable.turnOffAllTasks()
         then:
-        actualResult.code == HttpStatus.OK
-        actualResult.message == HttpStatus.OK.name()
+        actualResult.httpCode == HttpStatus.OK
         testable.getAllTasks().containsKey(taskId)
         testable.getAllTasks().get(taskId).getScheduledExecutorService().isShutdown()
     }

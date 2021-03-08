@@ -1,4 +1,4 @@
-package cv.vladislavchunikhin.discord.http;
+package cv.vladislavchunikhin.discord.http.code;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

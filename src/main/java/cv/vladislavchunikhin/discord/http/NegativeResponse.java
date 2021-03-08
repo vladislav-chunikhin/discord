@@ -1,8 +1,8 @@
 package cv.vladislavchunikhin.discord.http;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import cv.vladislavchunikhin.discord.http.code.ErrorType;
+import cv.vladislavchunikhin.discord.http.code.ResponseType;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class NegativeResponse extends GeneralResponse {
     /**
      * Message (Optional). In most cases it is error message.
@@ -19,19 +20,19 @@ public class NegativeResponse extends GeneralResponse {
     /**
      * Custom error type.
      */
-    private final ErrorType errorType;
+    private ErrorType errorType;
     /**
      * Custom error code.
      */
-    private final int errorCode;
+    private int errorCode;
 
     /**
      * @param httpCode  {@link HttpStatus}.
      * @param message   error message.
      * @param errorType {@link ErrorType}.
      */
-    public NegativeResponse(final HttpStatus httpCode, final String message, final ErrorType errorType) {
-        super(httpCode);
+    public NegativeResponse(@NonNull final HttpStatus httpCode, @NonNull final String message, @NonNull final ErrorType errorType) {
+        super(httpCode, ResponseType.FAIL);
         this.message = message;
         this.errorType = errorType;
         this.errorCode = errorType.getCode();
@@ -41,8 +42,8 @@ public class NegativeResponse extends GeneralResponse {
      * @param httpCode  {@link HttpStatus}.
      * @param errorType {@link ErrorType}.
      */
-    public NegativeResponse(final HttpStatus httpCode, final ErrorType errorType) {
-        super(httpCode);
+    public NegativeResponse(@NonNull final HttpStatus httpCode, @NonNull final ErrorType errorType) {
+        super(httpCode, ResponseType.FAIL);
         this.errorType = errorType;
         this.errorCode = errorType.getCode();
     }

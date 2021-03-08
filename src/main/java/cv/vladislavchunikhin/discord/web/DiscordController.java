@@ -1,5 +1,6 @@
 package cv.vladislavchunikhin.discord.web;
 
+import cv.vladislavchunikhin.discord.http.DiscordResponse;
 import cv.vladislavchunikhin.discord.http.GeneralResponse;
 import cv.vladislavchunikhin.discord.discord.DiscordService;
 import cv.vladislavchunikhin.discord.web.payload.DiscordDataTaskPayload;
@@ -43,7 +44,7 @@ public class DiscordController extends BaseController {
         )
     })
     @PostMapping("/notification/send")
-    public ResponseEntity<GeneralResponse> sendNotification(@RequestBody final SimpleNotificationPayload payload) {
+    public ResponseEntity<DiscordResponse> sendNotification(@RequestBody final SimpleNotificationPayload payload) {
         final GeneralResponse response = discordService.sendNotification(payload);
         return getApiResponse(response);
     }
@@ -62,7 +63,7 @@ public class DiscordController extends BaseController {
             )
     })
     @PostMapping("/notification-task/create")
-    public ResponseEntity<GeneralResponse> createNotificationTask(@Validated @RequestBody final DiscordDataTaskPayload payload) {
+    public ResponseEntity<DiscordResponse> createNotificationTask(@Validated @RequestBody final DiscordDataTaskPayload payload) {
         GeneralResponse response = discordService.createNotificationTask(payload);
         return getApiResponse(response);
     }
@@ -76,7 +77,7 @@ public class DiscordController extends BaseController {
             )
     })
     @PostMapping("/notification-task/shutdown")
-    public ResponseEntity<GeneralResponse> shutdownNotificationTask(
+    public ResponseEntity<DiscordResponse> shutdownNotificationTask(
             @RequestParam(value = "id", required = false) UUID id
     ) {
         GeneralResponse response = discordService.shutdownNotificationTask(id);
@@ -90,7 +91,7 @@ public class DiscordController extends BaseController {
             content = {@Content(schema = @Schema(implementation = GeneralResponse.class))}
     )
     @GetMapping("/notification-task")
-    public ResponseEntity<GeneralResponse> getAllNotificationTasks() {
+    public ResponseEntity<DiscordResponse> getAllNotificationTasks() {
         GeneralResponse response = discordService.getAllNotificationTasks();
         return getApiResponse(response);
     }

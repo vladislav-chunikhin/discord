@@ -1,7 +1,7 @@
 package cv.vladislavchunikhin.discord.discord;
 
 import cv.vladislavchunikhin.discord.discord.dto.ScheduledExecutorServiceDto;
-import cv.vladislavchunikhin.discord.http.ErrorType;
+import cv.vladislavchunikhin.discord.http.code.ErrorType;
 import cv.vladislavchunikhin.discord.http.GeneralResponse;
 import cv.vladislavchunikhin.discord.http.ResponseAPI;
 import lombok.NonNull;

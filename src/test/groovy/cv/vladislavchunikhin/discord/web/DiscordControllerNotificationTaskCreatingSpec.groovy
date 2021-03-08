@@ -1,6 +1,8 @@
 package cv.vladislavchunikhin.discord.web
 
 import cv.vladislavchunikhin.discord.discord.DiscordComponent
+import cv.vladislavchunikhin.discord.http.PositiveResponse
+import cv.vladislavchunikhin.discord.http.code.ResponseType
 import cv.vladislavchunikhin.discord.spock.ApiBaseSpec
 import cv.vladislavchunikhin.discord.web.payload.DiscordDataTaskPayload
 import groovy.sql.Sql
@@ -14,7 +16,7 @@ import java.time.DayOfWeek
  */
 class DiscordControllerNotificationTaskCreatingSpec extends ApiBaseSpec {
     @SpringBean DiscordComponent discordComponent = Mock()
-    @Shared sql = Sql.newInstance("jdbc:h2:mem:", "org.h2.Driver" )
+    @Shared sql = Sql.newInstance("jdbc:h2:mem:", "org.h2.Driver")
 
     def "notification creation task"() {
         given:
@@ -24,8 +26,8 @@ class DiscordControllerNotificationTaskCreatingSpec extends ApiBaseSpec {
         then:
         checkResultOnSuccessful(resultActions)
         def response = this.parseToGeneralResponse(resultActions)
-        response.message == "OK"
-        response.data != null
+        response.responseType == ResponseType.OK
+        ((PositiveResponse) response).data != null
         where:
         [dayOfWeek, hours] << [
                 [DayOfWeek.MONDAY, 0],
@@ -62,8 +64,8 @@ class DiscordControllerNotificationTaskCreatingSpec extends ApiBaseSpec {
         then:
         checkResultOnSuccessful(resultActions)
         def response = this.parseToGeneralResponse(resultActions)
-        response.message == "OK"
-        response.data != null
+        response.responseType == ResponseType.OK
+        ((PositiveResponse) response).data != null
         where:
         [dayOfWeek, hours] << sql.rows("SELECT 3 AS dayOfWeek, 12 AS hours")
     }

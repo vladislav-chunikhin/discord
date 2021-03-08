@@ -1,6 +1,9 @@
 package cv.vladislavchunikhin.discord.spock
 
+
 import cv.vladislavchunikhin.discord.http.GeneralResponse
+import cv.vladislavchunikhin.discord.http.NegativeResponse
+import cv.vladislavchunikhin.discord.http.PositiveResponse
 import cv.vladislavchunikhin.discord.util.JsonPojo
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.ResultActions
@@ -38,11 +41,13 @@ class ApiBaseSpec extends IntegrationBaseSpec {
     }
 
     protected static void checkResultOnServerError(final ResultActions resultActions) {
-        resultActions.andExpect(MockMvcResultMatchers.status().is5xxServerError());
+        resultActions.andExpect(MockMvcResultMatchers.status().is5xxServerError())
     }
 
     protected GeneralResponse parseToGeneralResponse(final ResultActions resultActions) {
         final String contentAsString = resultActions.andReturn().getResponse().getContentAsString()
+        if (contentAsString.contains("data")) return this.objectMapper.readValue(contentAsString, PositiveResponse.class)
+        if (contentAsString.contains("errorType")) return this.objectMapper.readValue(contentAsString, NegativeResponse.class)
         return this.objectMapper.readValue(contentAsString, GeneralResponse.class)
     }
 }

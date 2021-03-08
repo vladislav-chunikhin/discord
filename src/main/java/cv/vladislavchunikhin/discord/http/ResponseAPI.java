@@ -1,5 +1,7 @@
 package cv.vladislavchunikhin.discord.http;
 
+import cv.vladislavchunikhin.discord.http.code.ErrorType;
+import cv.vladislavchunikhin.discord.http.code.ResponseType;
 import lombok.NonNull;
 import lombok.experimental.UtilityClass;
 import org.springframework.http.HttpStatus;
@@ -21,8 +23,8 @@ public class ResponseAPI {
     /**
      * @return empty positive response.
      */
-    public EmptyResponse emptyPositiveResponse() {
-        return new EmptyResponse();
+    public GeneralResponse emptyPositiveResponse() {
+        return new GeneralResponse(HttpStatus.OK, ResponseType.OK);
     }
 
     /**

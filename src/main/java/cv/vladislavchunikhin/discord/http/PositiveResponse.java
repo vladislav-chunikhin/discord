@@ -1,8 +1,7 @@
 package cv.vladislavchunikhin.discord.http;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import cv.vladislavchunikhin.discord.http.code.ResponseType;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -12,18 +11,19 @@ import org.springframework.http.HttpStatus;
  */
 @Getter
 @Setter
-@ToString(callSuper = true)
+@ToString
+@NoArgsConstructor
 public class PositiveResponse<T> extends GeneralResponse {
     /**
      * Main data.
      */
-    private final T data;
+    private T data;
 
     /**
      * @param data main data.
      */
-    public PositiveResponse(T data) {
-        super(HttpStatus.OK);
+    public PositiveResponse(@NonNull T data) {
+        super(HttpStatus.OK, ResponseType.OK);
         this.data = data;
     }
 }
