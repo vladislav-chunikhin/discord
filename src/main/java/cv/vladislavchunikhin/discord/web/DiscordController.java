@@ -24,7 +24,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Tag(name = "Discord API")
 public class DiscordController extends BaseController {
-
+    /**
+     * General discord service containing all business methods.
+     */
     private final DiscordService discordService;
 
     @Operation(summary = "One-time notification sending")
