@@ -5,7 +5,6 @@ import cv.vladislavchunikhin.discord.discord.dto.TimeCalculationDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mockito;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -14,7 +13,7 @@ import java.util.stream.Stream;
 
 class TimeCalculationComponentImplTest {
 
-    private final TimeCalculationComponent testable = Mockito.spy(TimeCalculationComponentImpl.class);
+    private final TimeCalculationComponent testable = new TimeCalculationComponentImpl();
 
     @ParameterizedTest
     @MethodSource("calculateSecPeriodFromNowToFixedTimeProvider")
